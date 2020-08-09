@@ -70,7 +70,7 @@ const orderItemData = [
     id: 8, order_id: 3, item_id: 5, quantity: 7
   },
   {
-    id: 8, order_id: 3, item_id: 4, quantity: 6
+    id: 9, order_id: 3, item_id: 4, quantity: 6
   }
 ]
 

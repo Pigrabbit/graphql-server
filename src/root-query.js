@@ -3,9 +3,9 @@ const {
   GraphQLList,
   GraphQLInt
 } = require('graphql')
+const pool = require("../db");
 
 const { ItemType, OrderType, OrderItemType } = require('./schema')
-const { itemData, orderData, orderItemData } = require('./data')
 
 const RootQueryType = new GraphQLObjectType({
   name: 'Query',
@@ -14,12 +14,36 @@ const RootQueryType = new GraphQLObjectType({
     items: {
       type: new GraphQLList(ItemType),
       description: 'List of Items',
-      resolve: () => itemData
+      // getItems
+      resolve: async () => {
+        const conn = await pool.getConnection();
+        try {
+          const query = "SELECT * FROM Item";
+          const [rows] = await conn.query(query);
+          return rows;
+        } catch(error) {
+          throw error
+        } finally {
+          conn.release();
+        }
+      }
     },
     orderedItems: {
       type: new GraphQLList(OrderItemType),
       description: 'List of ordered items',
-      resolve: () => orderItemData
+      // getOrderItems
+      resolve: async () => {
+        const conn = await pool.getConnection();
+        try {
+          const query = "SELECT * FROM OrderItem";
+          const [rows] = await conn.query(query);
+          return rows;
+        } catch(error) {
+          throw error
+        } finally {
+          conn.release();
+        }
+      }
     },
     order: {
       type: OrderType,
@@ -27,13 +51,35 @@ const RootQueryType = new GraphQLObjectType({
       args: {
         id: { type: GraphQLInt }
       },
-      // use db query in resolve function
-      resolve: (parent, args) => orderData.find(order => order.id === args.id)
+      // getOrderById 
+      resolve: async (parent, args) => {
+        const conn = await pool.getConnection();
+        try {
+          const query = "SELECT * FROM \`Order\` WHERE id=?";
+          const [rows] = await conn.query(query, [args.id]);
+          return rows[0];
+        } catch(error) {
+          throw error
+        } finally {
+          conn.release();
+        }
+      }
     },
     orders: {
       type: new GraphQLList(OrderType),
       description: 'List of orders',
-      resolve: () => orderData
+      resolve: async () => {
+        const conn = await pool.getConnection();
+        try {
+          const query = "SELECT * FROM \`Order\`";
+          const [rows] = await conn.query(query);
+          return rows;
+        } catch(error) {
+          throw error
+        } finally {
+          conn.release();
+        }
+      }
     }
   })
 })

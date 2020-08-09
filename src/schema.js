@@ -5,9 +5,7 @@ const {
   GraphQLInt,
   GraphQLNonNull
 } = require('graphql')
-const {
-  userData, itemData, orderItemData
-} = require('./data')
+const pool = require("../db");
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -38,7 +36,19 @@ const OrderItemType = new GraphQLObjectType({
     quantity: { type: GraphQLNonNull(GraphQLInt) },
     item: {
       type: ItemType,
-      resolve: orderedItem => itemData.find(item => item.id === orderedItem.item_id)
+      // getItemById
+      resolve: async (orderItem) => {
+        const conn = await pool.getConnection();
+        try {
+          const query = "SELECT * FROM Item WHERE id=?";
+          const [rows] = await conn.query(query, [orderItem.id]);
+          return rows[0];
+        } catch(error) {
+          throw error
+        } finally {
+          conn.release();
+        }
+      }
     }
   })
 })
@@ -51,11 +61,35 @@ const OrderType = new GraphQLObjectType({
     user_id: { type: GraphQLNonNull(GraphQLInt) },
     user: {
       type: UserType,
-      resolve: order => userData.find(user => user.id === order.user_id)
+      // getUserById
+      resolve: async (order) => {
+        const conn = await pool.getConnection();
+        try {
+          const query = "SELECT * FROM User WHERE id=?";
+          const [rows] = await conn.query(query, [order.user_id]);
+          return rows[0];
+        } catch(error) {
+          throw error
+        } finally {
+          conn.release();
+        }
+      }
     },
     orderItem: {
       type: GraphQLList(OrderItemType),
-      resolve: order => orderItemData.filter(item => item.order_id === order.id)
+      // getOrderItemByOrderId
+      resolve: async (order) => {
+        const conn = await pool.getConnection();
+        try {
+          const query = "SELECT * FROM OrderItem WHERE order_id=?";
+          const [rows] = await conn.query(query, [order.id]);
+          return rows;
+        } catch(error) {
+          throw error
+        } finally {
+          conn.release();
+        }
+      }
     }
   })
 })
