@@ -45,15 +45,33 @@ const userData = [
 ]
 
 const orderItemData = [
-  { id: 1, order_id: 1, item_id: 1 },
-  { id: 2, order_id: 1, item_id: 8 },
-  { id: 3, order_id: 2, item_id: 1 },
-  { id: 4, order_id: 2, item_id: 2 },
-  { id: 5, order_id: 2, item_id: 7 },
-  { id: 6, order_id: 2, item_id: 9 },
-  { id: 7, order_id: 4, item_id: 5 },
-  { id: 8, order_id: 3, item_id: 5 },
-  { id: 8, order_id: 3, item_id: 4 }
+  {
+    id: 1, order_id: 1, item_id: 1, quantity: 1
+  },
+  {
+    id: 2, order_id: 1, item_id: 8, quantity: 2
+  },
+  {
+    id: 3, order_id: 2, item_id: 1, quantity: 1
+  },
+  {
+    id: 4, order_id: 2, item_id: 2, quantity: 3
+  },
+  {
+    id: 5, order_id: 2, item_id: 7, quantity: 5
+  },
+  {
+    id: 6, order_id: 2, item_id: 9, quantity: 1
+  },
+  {
+    id: 7, order_id: 4, item_id: 5, quantity: 10
+  },
+  {
+    id: 8, order_id: 3, item_id: 5, quantity: 7
+  },
+  {
+    id: 8, order_id: 3, item_id: 4, quantity: 6
+  }
 ]
 
 module.exports = {
