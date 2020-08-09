@@ -80,6 +80,15 @@ const RootQueryType = new GraphQLObjectType({
       resolve: () => orderItemData
     },
     order: {
+      type: OrderType,
+      description: 'Single order',
+      args: {
+        id: { type: GraphQLInt }
+      },
+      // use db query in resolve function
+      resolve: (parent, args) => orderData.find(order => order.id === args.id)
+    },
+    orders: {
       type: new GraphQLList(OrderType),
       description: 'List of orders',
       resolve: () => orderData
@@ -87,8 +96,30 @@ const RootQueryType = new GraphQLObjectType({
   })
 })
 
+const RootMutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  description: 'Root Mutation',
+  fields: () => ({
+    addItem: {
+      type: ItemType,
+      description: 'place an order',
+      args: {
+        name: { type: GraphQLNonNull(GraphQLString) },
+        price: { type: GraphQLNonNull(GraphQLInt) },
+        category: { type: GraphQLNonNull(GraphQLString) }
+      },
+      resolve: (parent, args) => {
+        const item = { id: itemData.length + 1, name: args.name, price: args.price, category: args.category}
+        itemData.push(item);
+        return item
+      }
+    }
+  })
+})
+
 const schema = new GraphQLSchema({
-  query: RootQueryType
+  query: RootQueryType,
+  mutation: RootMutationType
 })
 
 app.use(
