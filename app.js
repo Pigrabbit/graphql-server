@@ -2,7 +2,8 @@ const express = require('express')
 const { graphqlHTTP } = require('express-graphql')
 const { GraphQLSchema } = require('graphql')
 
-const app = express()
+const app = express();
+const cors = require('cors');
 
 const RootQueryType = require('./src/root-query')
 const RootMutationType = require('./src/root-mutation')
@@ -12,6 +13,7 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
+app.use(cors());
 app.use(
   '/graphql',
   graphqlHTTP({
@@ -20,6 +22,6 @@ app.use(
   })
 )
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(5000, () => {
   console.log('graphql server running!')
 })
