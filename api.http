@@ -1,0 +1,5 @@
+### GET order
+GET http://localhost:5000/api/order/1
+
+### Get item
+GET http://localhost:5000/api/item/8
